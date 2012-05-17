@@ -32,8 +32,18 @@ url query := query
 url request := url request .. "?" .. query
 
 response := url fetch
-tweets := Yajl parseJson(response) map(t, t at("text"))
+parsed := Yajl parseJson(response)
+if (parsed proto == Map and parsed hasKey("error"),
+    "Twitter API Error: " .. parsed at("error") .. "." println
+    System exit -1
+)
+tweets := parsed map(t, t at("text"))
 
 # TODO delete URLs from tweets
+# TODO delete replies (e.g. "@foobar blah blah")
+# TODO delete mentions (e.g. "... (via @foobar)")
 
-# TODO continue
+f := File with(filename)
+f openForUpdating
+f write(tweets join("\n%\n"))
+f close
