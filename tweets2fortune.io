@@ -34,7 +34,7 @@ url request := url request .. "?" .. query
 response := url fetch
 parsed := Yajl parseJson(response)
 if (parsed proto == Map and parsed hasKey("error"),
-    "Twitter API Error: " .. parsed at("error") .. "." println
+    ("Twitter API Error: " .. parsed at("error")) println
     System exit -1
 )
 tweets := parsed map(t, t at("text"))
